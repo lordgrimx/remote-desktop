@@ -17,7 +17,8 @@ jobs:
     - name: Extract Ngrok
       run: Expand-Archive ngrok.zip -DestinationPath $env:RUNNER_TEMP
     - name: Authenticate Ngrok
-      run: $env:RUNNER_TEMP\ngrok.exe authtoken $env:NGROK_AUTH_TOKEN
+      run: |
+        & "$env:RUNNER_TEMP\ngrok.exe" authtoken $env:NGROK_AUTH_TOKEN
       env:
         NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
     - name: Enable Remote Desktop
@@ -27,4 +28,5 @@ jobs:
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -Name "UserAuthentication" -Value 1
         Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText "P@ssw0rd!" -Force)
     - name: Start Ngrok Tunnel
-      run: $env:RUNNER_TEMP\ngrok.exe tcp 3389 --log=stdout --log-level=debug
+      run: |
+        & "$env:RUNNER_TEMP\ngrok.exe" tcp 3389 --log=stdout --log-level=debug
